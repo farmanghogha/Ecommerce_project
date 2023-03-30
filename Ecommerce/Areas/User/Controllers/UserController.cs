@@ -13,13 +13,13 @@ namespace Ecommerce.Areas.User.Controllers
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _db;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         public UserController(ApplicationDbContext db,
-                              UserManager<IdentityUser> userManager,
+                              UserManager<ApplicationUser> userManager,
                               RoleManager<IdentityRole> roleManager,
-                              SignInManager<IdentityUser> signInManager)
+                              SignInManager<ApplicationUser> signInManager)
         {
             _db = db;
             _userManager = userManager;
@@ -180,7 +180,7 @@ namespace Ecommerce.Areas.User.Controllers
         {
             var dealer = _db.dealer.FirstOrDefault(x => x.Email == email);
 
-            IdentityUser user = new()
+            ApplicationUser user = new()
             {
                 Email=dealer.Email,
                 UserName=dealer.UserName,
@@ -293,7 +293,7 @@ namespace Ecommerce.Areas.User.Controllers
             }
             else
             {
-                IdentityUser user = new()
+                ApplicationUser user = new()
                 {
                     UserName= addAdmin.UserName,
                     Email=addAdmin.Email,
