@@ -1,0 +1,47 @@
+﻿@model Login
+       
+     
+    
+   <form method="post" >
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Sign In</h2>
+            <hr />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" style="color:red"></span>
+        </div>
+       
+        <div class="mb-3">
+            <label asp-for="password"></label>
+            <input type="password" asp-for="password" class="form-control" />
+            <span asp-validation-for="password" style="color:red"></span>
+
+        </div>
+       
+            <button type="submit" class="btn btn-primary" style="width:150px"> Login</button>
+
+            <a class="btn btn-secondary" asp-controller="User" asp-action="SignUp">Sign Up</a>
+
+
+        </div>
+
+           @if (@ViewBag.validLogin!=null)
+            {
+              <div>
+               <label style ="color:red" >@ViewBag.validLogin</label>
+              </div>  
+            }
+   
+</form>
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptspartial"></partial>
+    }
+}
+   
+
+

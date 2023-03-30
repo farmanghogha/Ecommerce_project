@@ -1,0 +1,56 @@
+﻿@model Ecommerce.Models.SignUpDealler
+
+<form method="post" >
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Sign Up For Dealler</h2>
+            <hr />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="userName"></label>
+            <input asp-for="userName" class="form-control" />
+            <span asp-validation-for="userName" style="color:red"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="email"></label>
+            <input asp-for="email" class="form-control" />
+            <span asp-validation-for="email" style="color:red"></span>
+
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="phoneNo"></label>
+            <input asp-for="phoneNo" class="form-control" />
+            <span asp-validation-for="phoneNo" style="color:red"></span>
+
+        </div>
+        <div class="mb-3">
+            <label asp-for="password"></label>
+            <input type="password" asp-for="password" class="form-control" />
+            <span asp-validation-for="password" style="color:red"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="confo_password"></label>
+            <input type="password" asp-for="confo_password" class="form-control" />
+            <span asp-validation-for="confo_password" style="color:red"></span>
+        </div>
+        @if (ViewBag.validSignup != null)
+        {
+            <div class="mb-3">
+                <label style="color:red">@ViewBag.validSignup</label>
+            </div>
+        }
+       
+       
+            <button type="submit" class="btn btn-primary" style="width:150px"> SignUp</button>
+           <a class="btn btn-secondary" asp-action="Login" style="width:150px">Back To Login</a>
+      
+      
+    </div>
+</form>
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptspartial"></partial>
+    }
+}
