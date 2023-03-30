@@ -4,6 +4,7 @@ using Ecommerce.Models.DashboardVM;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
 using System.Dynamic;
 
 namespace Ecommerce.Areas.User.Controllers
@@ -137,11 +138,37 @@ namespace Ecommerce.Areas.User.Controllers
          {
             //ViewBag.rolecheck = HttpContext.Request.Cookies["Role"];
             ViewBag.rolecheck = HttpContext.Session.GetString("Role");
+            var Role= HttpContext.Session.GetString("Role");
+
+            if (Role == null)
+            {
+                return View();
+            }
+
 
             dynamic GlobleModel = new ExpandoObject();
-            GlobleModel.dealer = await _db.dealer.ToListAsync();
-            GlobleModel.Admin = await _userManager.GetUsersInRoleAsync(RoleType.Admin.ToString());
-            
+
+            switch (Role)
+            {
+                case "SuparAdmin":
+                    GlobleModel.dealer = await _db.dealer.ToListAsync();
+                    GlobleModel.Admin = await _userManager.GetUsersInRoleAsync(RoleType.Admin.ToString());
+                    GlobleModel.Product = await _db.product.ToListAsync();
+                    break;
+
+                case "Admin":
+                    GlobleModel.dealer = await _db.dealer.ToListAsync();                   
+                    GlobleModel.Product = await _db.product.ToListAsync();
+                    break;
+
+                case "Dealer":
+                    GlobleModel.Product = await _db.product.ToListAsync();
+                    break;
+
+            }
+
+
+           
            
 
             return View(GlobleModel);
@@ -219,7 +246,7 @@ namespace Ecommerce.Areas.User.Controllers
         }
 
 
-
+        // open popup for add reason
 
         [HttpGet]
         public IActionResult Popup(string email)
@@ -228,6 +255,7 @@ namespace Ecommerce.Areas.User.Controllers
             return PartialView("_Popup");
         }
 
+        // block user
         public IActionResult Block(string email)
         {
 
@@ -235,12 +263,55 @@ namespace Ecommerce.Areas.User.Controllers
             return RedirectToAction("Dashboard");
         }
 
-
+        // logout Account
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
+        }
+
+
+
+
+        // Add Admin by Super Admin only....
+
+        [HttpGet]
+        public async Task<IActionResult> AddAdmin()
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddAdmin(AddAdmin addAdmin)
+        {
+           var data=_userManager.FindByEmailAsync(addAdmin.Email);
+            if (data.Result!=null)
+            {
+                ViewBag.validAdmin = "Admin already Exist.....";
+                return View();
+            }
+            else
+            {
+                IdentityUser user = new()
+                {
+                    UserName= addAdmin.UserName,
+                    Email=addAdmin.Email,
+                    PhoneNumber = addAdmin.PhoneNo
+                };
+
+
+
+                var result = await _userManager.CreateAsync(user, addAdmin.password);
+                if(result.Succeeded)
+                {
+                  await _userManager.AddToRoleAsync(user,RoleType.Admin.ToString());
+                 
+                }
+                return RedirectToAction("Dashboard");
+
+            }
+           
         }
     }
 }
