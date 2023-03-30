@@ -175,7 +175,6 @@ namespace Ecommerce.Areas.User.Controllers
             _db.SaveChanges();
 
 
-
             SendMail sendMail = new SendMail()
             {
               From="admin@gmail.com",
