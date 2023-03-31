@@ -11,6 +11,7 @@
     {
         pendding,
         Approve,
-        Reject
+        Reject,
+        Block
     }
 }

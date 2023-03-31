@@ -6,8 +6,9 @@
     <h1 style="color:red">Page Not found...</h1>
 }
 
-@if (ViewBag.rolecheck == "SuparAdmin")
-{
+@*@if (ViewBag.rolecheck == "SuparAdmin")
+*@
+@if(User.IsInRole("SuparAdmin")){
     <div class="container p-3">
         <div class="row pt-4">
             <div class="col-6">
@@ -50,8 +51,8 @@
                    
                     <td width="20" style="text-align:center">
                         <div class="w-75 btn-group " role="group">
-                           
 
+                          
 
                         </div>
                     </td>
@@ -118,7 +119,11 @@
                                 <a asp-controller="User" asp-action="Block" asp-route-email="@obj.Email" class="btn btn-danger mx-2">Block</a>
 
                             }
+                            else if (obj.status == Status.Block)
+                            {
+                                <a asp-controller="User" asp-action="Block" asp-route-email="@obj.Email" class="btn btn-success mx-2">UnBlock</a>
 
+                            }
 
                         </div>
                     </td>
@@ -138,70 +143,10 @@
         </div>
     </div>
 }
-@if (ViewBag.rolecheck == "Dealer" || ViewBag.rolecheck == "Admin" || ViewBag.rolecheck == "SuparAdmin")
+@if (ViewBag.rolecheck == "Admin" || ViewBag.rolecheck == "SuparAdmin")
 {
-    <div class="container p-3">
-        <div class="row pt-4">
-            <div class="col-6">
-                <h3 class="text-primary">Product List</h3>
-            </div>
-            <div class="col-6 text-end">
-                @if(ViewBag.rolecheck == "Dealer")
-                {
-                    <a class="btn btn-primary" asp-asp-area="Product" asp-controller="Product" asp-action="AddProduct"><i class="bi bi-plus-circle"></i> Add Product</a>
-                    
-                }
-            </div>
-        </div>
-    </div>
-    <br />
+    <a asp-area="Product" asp-controller="Product" asp-action="Index"  class="btn btn-success mx-2">ProductList</a>
 
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>IsActive</th>
-                
-
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var obj in Model.Product)
-            {
-                <tr>
-
-                    <td width="30">
-                        @obj.ProductName
-                    </td>
-                    <td width="30">
-                        @obj.Description
-                    </td>
-                    <td width="30">
-                        @obj.Price
-                    </td>
-                    <td width="30">
-                        @obj.Quantity
-                    </td>
-                    <td width="30">
-                        @obj.IsActive
-                    </td>
-                   
-                    <td width="20" style="text-align:center">
-                        <div class="w-75 btn-group " role="group">
-                           <a class="btn btn-primary">Edit</a>
-                           <a class="btn btn-danger">Delete</a>
-
-
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 }
 
 

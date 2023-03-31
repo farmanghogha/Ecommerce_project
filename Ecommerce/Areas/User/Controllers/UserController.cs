@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using System.Dynamic;
+using System.Security.Claims;
 
 namespace Ecommerce.Areas.User.Controllers
 {
@@ -40,6 +41,8 @@ namespace Ecommerce.Areas.User.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
+            
+
             var data = await _userManager.FindByEmailAsync(login.Email);
 
             if (data == null)
@@ -51,12 +54,21 @@ namespace Ecommerce.Areas.User.Controllers
 
             var result = await _signInManager.PasswordSignInAsync(data, login.password, false, false);
             var role = await _userManager.GetRolesAsync(data);
-            if(result.Succeeded && role.Any())
+            if(result.Succeeded && role.Any() && data.IsActive == true && await _userManager.CheckPasswordAsync(data,login.password))
             {
                 var currentRole=role.FirstOrDefault();
                // HttpContext.Response.Cookies.Append("Role", currentRole);
                 HttpContext.Session.SetString("Role", currentRole);
+
+                if(currentRole == RoleType.Dealer.ToString())
+                {
+                  return RedirectToAction("Index", "Product", new { area = "Product"});
+                }
                 return RedirectToAction("Dashboard");
+            }
+            if(result.Succeeded && role.Any() && data.IsActive == false)
+            {
+                ViewBag.validLogin = "Your account has been block......";
             }
            
             return View();
@@ -185,10 +197,11 @@ namespace Ecommerce.Areas.User.Controllers
                 Email=dealer.Email,
                 UserName=dealer.UserName,
                 PhoneNumber=dealer.Phone,
+                IsActive=true
                 
             };
             var result = await _userManager.CreateAsync(user, dealer.Password);
-
+          //  await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Role, RoleType.Dealer.ToString()));
             if (result.Succeeded)
             {
                 if (!await _roleManager.RoleExistsAsync(RoleType.Dealer.ToString()))
@@ -256,9 +269,25 @@ namespace Ecommerce.Areas.User.Controllers
         }
 
         // block user
-        public IActionResult Block(string email)
+        public async Task<IActionResult> Block(string email)
         {
+            var data=_db.dealer.FirstOrDefault(x=>x.Email== email);
+            var user= await _userManager.FindByEmailAsync(email);
 
+            if (user.IsActive == false)
+            {
+                data.status = Status.Approve;
+                user.IsActive = true;
+                _db.dealer.Update(data);
+                await _db.SaveChangesAsync();
+            }
+            else
+            {
+                data.status=Status.Block;
+                user.IsActive= false;
+                _db.dealer.Update(data);
+                await _db.SaveChangesAsync();
+            }
 
             return RedirectToAction("Dashboard");
         }
