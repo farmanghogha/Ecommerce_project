@@ -23,15 +23,15 @@ namespace Ecommerce.Areas.Product.Controllers
       
         public async Task<IActionResult> Index()
         {
-            
-           
+
+            var user = await _userManager.GetUserAsync(User);
 
             var role =  HttpContext.Session.GetString("Role");
 
             if(role== RoleType.Dealer.ToString())
             {
-               // _db.product.Where(x => x.CreatedBy == user.Id).ToList()
-                return View(_db.product.ToList());
+                var data = _db.product.Where(x => x.CreatedBy == user.Id).ToList();
+                return View(data);
             }
             else if (role == RoleType.Admin.ToString() || role == RoleType.SuparAdmin.ToString())
             {
@@ -46,22 +46,39 @@ namespace Ecommerce.Areas.Product.Controllers
         }
 
         [HttpGet]
-        public IActionResult productPage()
+        public IActionResult productPage(int? id)
         {
+            if(id== null)
+            {
+                return View();
+            }
+            else
+            {
+                var data = _db.product.Find(id);
+              return View(data);
 
-            return View();
+            }
         }
 
 
         [HttpPost]
         public async Task<IActionResult> productPage(Productdata productdata)
         {
+            
            var data=await _userManager.GetUserAsync(User);
+
+            productdata.CreatedBy = data.Id;
+
+           await _db.product.AddAsync(productdata);
+           await _db.SaveChangesAsync();
+            
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public IActionResult EditProduct(string id)
+        public IActionResult EditProduct(Productdata productdata)
         {
+            _db.product.Update(productdata);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
         [HttpPost]

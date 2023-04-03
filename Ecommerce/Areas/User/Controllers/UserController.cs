@@ -54,8 +54,14 @@ namespace Ecommerce.Areas.User.Controllers
 
             var result = await _signInManager.PasswordSignInAsync(data, login.password, false, false);
             var role = await _userManager.GetRolesAsync(data);
+
+
+
+
+
             if(result.Succeeded && role.Any() && data.IsActive == true && await _userManager.CheckPasswordAsync(data,login.password))
             {
+               
                 var currentRole=role.FirstOrDefault();
                // HttpContext.Response.Cookies.Append("Role", currentRole);
                 HttpContext.Session.SetString("Role", currentRole);

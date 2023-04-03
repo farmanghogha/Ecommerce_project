@@ -13,11 +13,8 @@
           @if(role=="Dealer"){
             <a class="btn btn-primary" asp-action="productPage"><i class="bi bi-plus-circle"></i> Add Product</a>
 
-          } 
-             
-        
-
-            
+          }           
+                    
         </div>
     </div>
 </div>
@@ -59,8 +56,9 @@
 
                 <td width="20" style="text-align:center">
                     <div class="w-75 btn-group " role="group">
-                        <a class="btn btn-primary">Edit</a>
-                        <a class="btn btn-danger">Delete</a>
+                        <a class="btn btn-primary" asp-action="productPage" asp-route-id="@obj.ProductId">Edit</a>
+                       &nbsp;
+                         <a class="btn btn-danger" asp-action="">Delete</a>
 
 
                     </div>

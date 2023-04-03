@@ -6,6 +6,8 @@
             <h2 class="text-primary">Add Product</h2>
             <hr />
         </div>
+        <input type="hidden" asp-for="CreatedBy"/>
+        <input type="hidden" asp-for="ProductId" />
 
         <div class="mb-3">
             <label asp-for="ProductName"></label>
@@ -32,10 +34,21 @@
         </div>
        
 
+        
+        @if (Model!= null)
+        {
 
+            <button type="submit" asp-action="EditProduct" class="btn btn-primary" style="width:150px">Edit</button>
+        }
+        else
+        {
+            
+         <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
+        }
+        <a class="btn btn-secondary" asp-action="Index" style="width:150px">Back To List</a>
+        
 
-        <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
-        <a class="btn btn-secondary"  asp-action="Index" style="width:150px">Back To List</a>
+       
 
 
     </div>
