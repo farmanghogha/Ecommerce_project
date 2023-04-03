@@ -20,7 +20,6 @@ namespace Ecommerce.Areas.Product.Controllers
         }
 
         [HttpGet]
-      
         public async Task<IActionResult> Index()
         {
 
@@ -45,6 +44,9 @@ namespace Ecommerce.Areas.Product.Controllers
           
         }
 
+
+
+
         [HttpGet]
         public IActionResult productPage(int? id)
         {
@@ -60,7 +62,7 @@ namespace Ecommerce.Areas.Product.Controllers
             }
         }
 
-
+        // Add Product
         [HttpPost]
         public async Task<IActionResult> productPage(Productdata productdata)
         {
@@ -74,6 +76,8 @@ namespace Ecommerce.Areas.Product.Controllers
             
             return RedirectToAction("Index");
         }
+        
+        //Edit Product
         [HttpPost]
         public IActionResult EditProduct(Productdata productdata)
         {
@@ -81,9 +85,13 @@ namespace Ecommerce.Areas.Product.Controllers
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
-        [HttpPost]
-        public IActionResult DeleteProduct(string id)
+        //Delete Product
+        public IActionResult DeleteProduct(int id)
         {
+            var data=_db.product.Find(id);
+            _db.product.Remove(data);
+             _db.SaveChanges();
+
             return RedirectToAction("Index");
         }
     }

@@ -171,16 +171,16 @@ namespace Ecommerce.Areas.User.Controllers
                 case "SuparAdmin":
                     GlobleModel.dealer = await _db.dealer.ToListAsync();
                     GlobleModel.Admin = await _userManager.GetUsersInRoleAsync(RoleType.Admin.ToString());
-                    GlobleModel.Product = await _db.product.ToListAsync();
+                   // GlobleModel.Product = await _db.product.ToListAsync();
                     break;
 
                 case "Admin":
                     GlobleModel.dealer = await _db.dealer.ToListAsync();                   
-                    GlobleModel.Product = await _db.product.ToListAsync();
+                   // GlobleModel.Product = await _db.product.ToListAsync();
                     break;
 
                 case "Dealer":
-                    GlobleModel.Product = await _db.product.ToListAsync();
+                   // GlobleModel.Product = await _db.product.ToListAsync();
                     break;
 
             }
