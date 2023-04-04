@@ -14,5 +14,6 @@ namespace Ecommerce.Models
         public int Quantity { get; set; }
         public bool IsActive { get; set; }
         public string CreatedBy { get; set; }
+        public double DiscountAmount { get; set; }
     }
 }

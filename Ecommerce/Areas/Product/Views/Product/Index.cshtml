@@ -29,7 +29,7 @@
             <th>Price</th>
             <th>Quantity</th>
             <th>IsActive</th>
-
+            <th>DiscountAmount</th>
 
         </tr>
     </thead>
@@ -53,15 +53,27 @@
                 <td width="30">
                     @obj.IsActive
                 </td>
-
+                <td width="30">
+                    @obj.DiscountAmount
+                </td>
                 <td width="20" style="text-align:center">
-                    <div class="w-75 btn-group " role="group">
+                   @if(@ViewBag.roletype=="Dealer"){
+                    <div class="w-75 btn-group" role="group">
                         <a class="btn btn-primary" asp-action="productPage" asp-route-id="@obj.ProductId">Edit</a>
-                       &nbsp;
+                          &nbsp;
+                        <a class="btn btn-success" asp-action="AddDiscount" asp-route-id="@obj.ProductId">Discount</a>
+                          &nbsp;
                         <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId">Delete</a>
+                            
+                     </div>
+
+                    }
+                    else
+                    {
+                        <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId">Delete</a>
+                    }
 
 
-                    </div>
                 </td>
             </tr>
         }

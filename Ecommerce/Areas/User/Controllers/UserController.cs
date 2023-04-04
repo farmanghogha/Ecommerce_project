@@ -17,6 +17,7 @@ namespace Ecommerce.Areas.User.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        public static string username = "";
         public UserController(ApplicationDbContext db,
                               UserManager<ApplicationUser> userManager,
                               RoleManager<IdentityRole> roleManager,
@@ -61,12 +62,12 @@ namespace Ecommerce.Areas.User.Controllers
 
             if(result.Succeeded && role.Any() && data.IsActive == true && await _userManager.CheckPasswordAsync(data,login.password))
             {
-               
+                username = data.Email;
                 var currentRole=role.FirstOrDefault();
                // HttpContext.Response.Cookies.Append("Role", currentRole);
                 HttpContext.Session.SetString("Role", currentRole);
-
-                if(currentRole == RoleType.Dealer.ToString())
+               
+                if (currentRole == RoleType.Dealer.ToString())
                 {
                   return RedirectToAction("Index", "Product", new { area = "Product"});
                 }
@@ -157,13 +158,13 @@ namespace Ecommerce.Areas.User.Controllers
             //ViewBag.rolecheck = HttpContext.Request.Cookies["Role"];
             ViewBag.rolecheck = HttpContext.Session.GetString("Role");
             var Role= HttpContext.Session.GetString("Role");
-
+          
             if (Role == null)
             {
                 return View();
             }
 
-
+            ViewBag.UserName = username;
             dynamic GlobleModel = new ExpandoObject();
 
             switch (Role)

@@ -11,7 +11,7 @@ namespace Ecommerce.Areas.Product.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
-
+       
 
         public ProductController(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
         {
@@ -20,22 +20,29 @@ namespace Ecommerce.Areas.Product.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? id)
         {
+            var user =await _userManager.GetUserAsync(User);
 
-            var user = await _userManager.GetUserAsync(User);
+            var role = await _userManager.GetRolesAsync(user);
+            var currentrole = role.FirstOrDefault();
+            ViewBag.roletype = currentrole;
 
-            var role =  HttpContext.Session.GetString("Role");
 
-            if(role== RoleType.Dealer.ToString())
+            if (id == null)
             {
-                var data = _db.product.Where(x => x.CreatedBy == user.Id).ToList();
+                var userd = await _userManager.GetUserAsync(User);
+                ViewBag.UserName = user.Email;
+                              
+                var data = _db.product.Where(x => x.CreatedBy == userd.Id).ToList();
                 return View(data);
+                
             }
-            else if (role == RoleType.Admin.ToString() || role == RoleType.SuparAdmin.ToString())
-            {
-                return View(_db.product.ToList());
-            }
+            else if (id != null)
+            {   var userdata= await _userManager.FindByEmailAsync(id);
+                var data = _db.product.Where(x => x.CreatedBy == userdata.Id).ToList();
+                return View(data);
+            }          
             else
             {
                 return View();
@@ -92,6 +99,32 @@ namespace Ecommerce.Areas.Product.Controllers
             _db.product.Remove(data);
              _db.SaveChanges();
 
+            return RedirectToAction("Index");
+        }
+        //Add Discount
+        public IActionResult AddDiscount(int id)
+        {
+            ViewBag.pid = id;
+            return View();
+        }
+        [HttpPost]
+        public IActionResult AddDiscount(Discount discount)
+        {
+           _db.discount.Add(discount);
+
+            var product = _db.product.Find(discount.ProductId);
+
+            if(discount.DiscountType==DiscountType.Amount)
+            {
+                product.DiscountAmount = discount.Amount;
+            }
+            else
+            {
+                product.DiscountAmount = (product.Price * discount.Amount) / 100 ;
+
+            }
+            _db.product.Update(product);
+            _db.SaveChanges();
             return RedirectToAction("Index");
         }
     }

@@ -13,5 +13,7 @@ namespace Ecommerce.Data
         }
         public DbSet<Dealer> dealer { get; set; }
         public DbSet<Productdata> product { get; set; }
+        public DbSet<Discount> discount { get; set; }
+
     }
 }

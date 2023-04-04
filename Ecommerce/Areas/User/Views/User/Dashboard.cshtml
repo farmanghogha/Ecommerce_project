@@ -26,8 +26,8 @@
             <tr>
 
                 <th>UserName</th>
-                <th>Phone</th>
                 <th>Email</th>
+                <th>Phone</th>
               
                 
 
@@ -125,6 +125,9 @@
 
                             }
 
+                            <a asp-area="Product" asp-controller="Product" asp-action="Index" asp-route-id="@obj.Email" class="btn btn-success mx-2">ViewProduct</a>
+
+
                         </div>
                     </td>
                 </tr>
@@ -145,7 +148,6 @@
 }
 @if (ViewBag.rolecheck == "Admin" || ViewBag.rolecheck == "SuparAdmin")
 {
-    <a asp-area="Product" asp-controller="Product" asp-action="Index"  class="btn btn-success mx-2">ProductList</a>
 
 }
 

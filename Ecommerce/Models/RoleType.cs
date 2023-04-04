@@ -14,4 +14,9 @@
         Reject,
         Block
     }
+    public enum DiscountType
+    {
+        Amount,
+        Percentage
+    }
 }
