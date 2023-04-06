@@ -22,6 +22,8 @@ namespace Ecommerce.Areas.Product.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string? id)
         {
+
+           
             var user =await _userManager.GetUserAsync(User);
 
             var role = await _userManager.GetRolesAsync(user);
@@ -39,9 +41,22 @@ namespace Ecommerce.Areas.Product.Controllers
                 
             }
             else if (id != null)
-            {   var userdata= await _userManager.FindByEmailAsync(id);
-                var data = _db.product.Where(x => x.CreatedBy == userdata.Id).ToList();
-                return View(data);
+            {
+                if (id.Contains("@"))
+                {
+                    var userdata = await _userManager.FindByEmailAsync(id);
+                    var data = _db.product.Where(x => x.CreatedBy == userdata.Id).ToList();
+                    return View(data);
+                }
+                else
+                {
+                    var userdata = await _userManager.FindByIdAsync(id);
+                    var data = _db.product.Where(x => x.CreatedBy == userdata.Id).ToList();
+                    return View(data);
+                }
+                   
+               
+               
             }          
             else
             {
@@ -50,9 +65,6 @@ namespace Ecommerce.Areas.Product.Controllers
             
           
         }
-
-
-
 
         [HttpGet]
         public IActionResult productPage(int? id)
@@ -126,6 +138,25 @@ namespace Ecommerce.Areas.Product.Controllers
             _db.product.Update(product);
             _db.SaveChanges();
             return RedirectToAction("Index");
+        }
+        // status change Active or Deactive
+        public IActionResult StatusUpdate(int id)
+        {
+            var data = _db.product.Find(id);
+            if(id!=0 || id != null)
+            {
+                if(data.IsActive==true)
+                {
+                    data.IsActive= false;
+                }
+                else
+                {
+                    data.IsActive=true;
+                }
+            }
+            _db.product.Update(data);
+            _db.SaveChanges();
+           return RedirectToAction("Index", null, new { id = data.CreatedBy});
         }
     }
 }

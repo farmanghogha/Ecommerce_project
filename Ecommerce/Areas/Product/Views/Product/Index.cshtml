@@ -64,13 +64,32 @@
                         <a class="btn btn-success" asp-action="AddDiscount" asp-route-id="@obj.ProductId">Discount</a>
                           &nbsp;
                         <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId">Delete</a>
-                            
+                        &nbsp;
+                       @if(obj.IsActive==false){
+
+                            <a class="btn btn-outline-success" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">IsActive</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-danger" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">DeActive</a>
+
+                        }
                      </div>
 
                     }
                     else
                     {
                         <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId">Delete</a>
+                       if(obj.IsActive==false){
+
+                            <a class="btn btn-outline-success" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">IsActive</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-danger" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">DeActive</a>
+
+                        }
+
                     }
 
 
