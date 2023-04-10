@@ -65,6 +65,7 @@ namespace Ecommerce.Areas.User.Controllers
                 username = data.Email;
                 var currentRole=role.FirstOrDefault();
                // HttpContext.Response.Cookies.Append("Role", currentRole);
+
                 HttpContext.Session.SetString("Role", currentRole);
                
                 if (currentRole == RoleType.Dealer.ToString())

@@ -139,6 +139,7 @@ namespace Ecommerce.Areas.Product.Controllers
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
+
         // status change Active or Deactive
         public IActionResult StatusUpdate(int id)
         {
