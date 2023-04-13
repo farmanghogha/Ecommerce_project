@@ -67,7 +67,7 @@ namespace Ecommerce.Areas.Product.Controllers
             }
             
           
-        }
+        }                          
 
         [HttpGet]
         public IActionResult productPage(int? id)
@@ -213,7 +213,7 @@ namespace Ecommerce.Areas.Product.Controllers
         }
 
         // status change Active or Deactive
-        public IActionResult StatusUpdate(int id)
+        public IActionResult StatusUpdate(int? id)
         {
             var data = _db.product.Find(id);
             if(id!=0 || id != null)

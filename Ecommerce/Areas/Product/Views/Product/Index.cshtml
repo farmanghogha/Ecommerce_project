@@ -3,6 +3,10 @@
 @{
     var role = HttpContextAccessor.HttpContext.Session.GetString("Role");
 }
+@if (Model == null)
+{
+    <h1 style="color:red">Page Not found...</h1>
+}
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
@@ -13,8 +17,13 @@
           @if(role=="Dealer"){
             <a class="btn btn-primary" asp-action="productPage"><i class="bi bi-plus-circle"></i> Add Product</a>
 
-          }           
-                    
+          }
+            @if (role != "Dealer")
+            {
+                
+                <a class="btn btn-primary" asp-area="User" asp-controller="User" asp-action="Dashboard"><i class="bi bi-backspace"></i> Go Back</a>
+            }
+
         </div>
     </div>
 </div>
@@ -59,11 +68,11 @@
                 <td width="20" style="text-align:center">
                    @if(@ViewBag.roletype=="Dealer"){
                     <div class="w-75 btn-group" role="group">
-                        <a class="btn btn-primary" asp-action="productPage" asp-route-id="@obj.ProductId">Edit</a>
+                            <a class="btn btn-primary" asp-action="productPage" asp-route-id="@obj.ProductId"><i class="bi bi-pencil-square"></i> Edit</a>
                           &nbsp;
                         <a class="btn btn-success" asp-action="AddDiscount" asp-route-id="@obj.ProductId">Discount</a>
                           &nbsp;
-                        <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId">Delete</a>
+                            <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId"><i class="bi bi-trash"></i> Delete</a>
                         &nbsp;
                        @if(obj.IsActive==false){
 
@@ -79,7 +88,7 @@
                     }
                     else
                     {
-                        <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId">Delete</a>
+                        <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId"><i class="bi bi-trash"></i> Delete</a>
                        if(obj.IsActive==false){
 
                             <a class="btn btn-outline-success" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">IsActive</a>

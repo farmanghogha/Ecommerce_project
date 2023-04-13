@@ -8,6 +8,9 @@
         </div>
         <input type="hidden" asp-for="CreatedBy"/>
         <input type="hidden" asp-for="ProductId" />
+        <input type="hidden" asp-for="IsActive" />
+        <input type="hidden" asp-for="DiscountAmount" />
+
      
         <input type="hidden" asp-for="ImageUrl" />
         <div class="mb-3">
@@ -43,14 +46,14 @@
         @if (Model!= null)
         {
 
-            <button type="submit" asp-action="EditProduct" class="btn btn-primary" style="width:150px">Edit</button>
+            <button type="submit" asp-action="EditProduct" class="btn btn-primary" style="width:150px"> <i class="bi bi-pencil-square"></i> Edit</button>
         }
         else
         {
             
          <button type="submit" class="btn btn-primary" style="width:150px">Save</button>
         }
-        <a class="btn btn-secondary" asp-action="Index" style="width:150px">Back To List</a>
+        <a class="btn btn-secondary" asp-action="Index" style="width:150px"> <i class="bi bi-backspace-fill"></i> Back To List</a>
         
 
        
