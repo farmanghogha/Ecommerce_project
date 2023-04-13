@@ -3,6 +3,7 @@ using Ecommerce.Data;
 using Ecommerce.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 
 namespace Ecommerce.Areas.Product.Controllers
 {
@@ -11,12 +12,14 @@ namespace Ecommerce.Areas.Product.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IWebHostEnvironment _hostEnvironment;
        
 
-        public ProductController(ApplicationDbContext db, UserManager<ApplicationUser> userManager)
+        public ProductController(ApplicationDbContext db, UserManager<ApplicationUser> userManager , IWebHostEnvironment hostEnvironment)
         {
             _db = db;
             _userManager = userManager;
+            _hostEnvironment = hostEnvironment;
         }
 
         [HttpGet]
@@ -83,10 +86,27 @@ namespace Ecommerce.Areas.Product.Controllers
 
         // Add Product
         [HttpPost]
-        public async Task<IActionResult> productPage(Productdata productdata)
+        public async Task<IActionResult> productPage(Productdata productdata,IFormFile file)
         {
-            
-           var data=await _userManager.GetUserAsync(User);
+
+            string wwwRootPath = _hostEnvironment.WebRootPath;
+           
+                string filename = Guid.NewGuid().ToString();
+                var uploads = Path.Combine(wwwRootPath, @"images\Products");
+                var extension = Path.GetExtension(file.FileName);
+                
+               
+                using (var fileStreams = new FileStream(Path.Combine(uploads, filename + extension), FileMode.Create))
+                {
+                    file.CopyTo(fileStreams);
+                }
+            productdata.ImageUrl = @"\images\products\" + filename + extension;
+
+          
+           
+         
+
+            var data=await _userManager.GetUserAsync(User);
 
             productdata.CreatedBy = data.Id;
 
@@ -98,8 +118,39 @@ namespace Ecommerce.Areas.Product.Controllers
         
         //Edit Product
         [HttpPost]
-        public IActionResult EditProduct(Productdata productdata)
+        public IActionResult EditProduct(Productdata productdata , IFormFile? file)
         {
+            if(file != null)
+            {
+               string wwwRootPath = _hostEnvironment.WebRootPath;
+               
+
+                if (productdata.ImageUrl != null)
+                {
+                    var oldImagePath = Path.Combine(wwwRootPath, productdata.ImageUrl.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+
+                }
+
+
+                string filename = Guid.NewGuid().ToString();
+                var uploads = Path.Combine(wwwRootPath, @"images\Products");
+                var extension = Path.GetExtension(file.FileName);
+
+                using (var fileStreams = new FileStream(Path.Combine(uploads, filename + extension), FileMode.Create))
+                {
+                    file.CopyTo(fileStreams);
+                }
+                productdata.ImageUrl = @"\images\products\" + filename + extension;
+
+            }
+
+
+
+
             _db.product.Update(productdata);
             _db.SaveChanges();
             return RedirectToAction("Index");
@@ -107,9 +158,24 @@ namespace Ecommerce.Areas.Product.Controllers
         //Delete Product
         public IActionResult DeleteProduct(int id)
         {
+
             var data=_db.product.Find(id);
+
+            string wwwRootPath = _hostEnvironment.WebRootPath;
+
+
+            if (data.ImageUrl != null)
+            {
+                var oldImagePath = Path.Combine(wwwRootPath, data.ImageUrl.TrimStart('\\'));
+                if (System.IO.File.Exists(oldImagePath))
+                {
+                    System.IO.File.Delete(oldImagePath);
+                }
+
+            }
+
             _db.product.Remove(data);
-             _db.SaveChanges();
+            _db.SaveChanges();
 
             return RedirectToAction("Index");
         }
@@ -122,7 +188,6 @@ namespace Ecommerce.Areas.Product.Controllers
         [HttpPost]
         public IActionResult AddDiscount(Discount discount)
         {
-           _db.discount.Add(discount);
 
             var product = _db.product.Find(discount.ProductId);
 
@@ -132,9 +197,16 @@ namespace Ecommerce.Areas.Product.Controllers
             }
             else
             {
+                if (discount.Amount > 100)
+                {
+                    ViewBag.adddisErroe = "percentage not valid Enter only 1 to 100";
+                    @ViewBag.pid=discount.ProductId;
+                    return View(discount);
+                }
                 product.DiscountAmount = (product.Price * discount.Amount) / 100 ;
 
             }
+            _db.discount.Add(discount);
             _db.product.Update(product);
             _db.SaveChanges();
             return RedirectToAction("Index");

@@ -21,6 +21,8 @@
             <label>Discount Amount/percentage</label>
             <input asp-for="Amount" class="form-control" />
             <span asp-validation-for="Amount" style="color:red"></span>
+          
+            <span style="color:red">@ViewBag.adddisErroe</span>
         </div>
         <div class="mb-3">
             <label asp-for="FromTo"></label>
