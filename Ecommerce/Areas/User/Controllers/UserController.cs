@@ -316,7 +316,10 @@ namespace Ecommerce.Areas.User.Controllers
         [HttpGet]
         public async Task<IActionResult> AddAdmin()
         {
-
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
             return View();
         }
         [HttpPost]

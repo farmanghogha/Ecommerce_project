@@ -27,15 +27,15 @@
         </div>
         <div class="mb-3">
             <label asp-for="FromTo"></label>
-            <input asp-for="FromTo" class="form-control" />
-           
+            <input asp-for="FromTo" type="datetime-local" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"/>
+            <span asp-validation-for="FromTo" style="color:red"></span>
 
         </div>
 
         <div class="mb-3">
             <label asp-for="validTo"></label>
-            <input asp-for="validTo" class="form-control" />
-           
+            <input asp-for="validTo" type="datetime-local" class="form-control" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"/>
+            <span asp-validation-for="validTo" style="color:red"></span>
 
         </div>
                    

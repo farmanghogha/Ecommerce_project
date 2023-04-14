@@ -25,7 +25,10 @@ namespace Ecommerce.Areas.Product.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string? id)
         {
-
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "User", new { area = "User" });
+            }
            
             var user =await _userManager.GetUserAsync(User);
 
@@ -72,7 +75,12 @@ namespace Ecommerce.Areas.Product.Controllers
         [HttpGet]
         public IActionResult productPage(int? id)
         {
-            if(id== null)
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "User", new { area = "User" });
+            }
+
+            if (id== null)
             {
                 return View();
             }
@@ -88,6 +96,18 @@ namespace Ecommerce.Areas.Product.Controllers
         [HttpPost]
         public async Task<IActionResult> productPage(Productdata productdata,IFormFile file)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login","User",new { area = "User" });
+            }
+
+
+
+            if (file == null)
+            {
+                ViewBag.imagevalid = "Please choose image";
+                return View();
+            }
 
             string wwwRootPath = _hostEnvironment.WebRootPath;
            
@@ -182,6 +202,10 @@ namespace Ecommerce.Areas.Product.Controllers
         //Add Discount
         public IActionResult AddDiscount(int id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "User", new { area = "User" });
+            }
             ViewBag.pid = id;
             return View();
         }
@@ -231,5 +255,29 @@ namespace Ecommerce.Areas.Product.Controllers
             _db.SaveChanges();
            return RedirectToAction("Index", null, new { id = data.CreatedBy});
         }
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> Search(string? name,int? id)
+        //{
+        //    var user = await _userManager.GetUserAsync(User);
+
+        //    var data = _db.product.Where(x => x.CreatedBy == user.Id);
+        //    if (name == null)
+        //    {
+                
+        //        return View("Index",data);
+        //    }
+        //    else if (id != null)
+        //    {
+        //        return View("index");
+        //    }
+        //    else
+        //    {
+        //      var serchdata=data.Where(x=>x.ProductName.Contains(name)).ToList();  
+        //        return View("Index", serchdata);
+        //    }
+            
+        //}
     }
 }
