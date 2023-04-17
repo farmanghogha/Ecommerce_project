@@ -1,4 +1,5 @@
-﻿using Ecommerce.Data;
+﻿using Ecommerce.Areas.Product.Controllers;
+using Ecommerce.Data;
 using Ecommerce.Models;
 using Ecommerce.Models.DashboardVM;
 using Microsoft.AspNetCore.Identity;
@@ -31,9 +32,14 @@ namespace Ecommerce.Areas.User.Controllers
         }
 
 
+     
 
+
+
+      
+        
         // Login for any User 
-
+      
 
         public IActionResult Login()
         {
@@ -46,21 +52,25 @@ namespace Ecommerce.Areas.User.Controllers
 
             var data = await _userManager.FindByEmailAsync(login.Email);
 
-            if (data == null)
+            if (data==null)
             {
                 ViewBag.validLogin = "Invalid Email And Password.....";
                 return View();
             }
-          
+
 
             var result = await _signInManager.PasswordSignInAsync(data, login.password, false, false);
             var role = await _userManager.GetRolesAsync(data);
 
+            if (!result.Succeeded)
+            {
+                ViewBag.validLogin = "Invalid  Password.....";
+                return View();
+            }
 
 
 
-
-            if(result.Succeeded && role.Any() && data.IsActive == true && await _userManager.CheckPasswordAsync(data,login.password))
+            if (result.Succeeded && role.Any() && data.IsActive == true && await _userManager.CheckPasswordAsync(data,login.password))
             {
                 username = data.Email;
                 var currentRole=role.FirstOrDefault();
@@ -359,4 +369,5 @@ namespace Ecommerce.Areas.User.Controllers
            
         }
     }
+   
 }

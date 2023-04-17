@@ -1,4 +1,5 @@
 ﻿
+using Ecommerce.Areas.User.Controllers;
 using Ecommerce.Data;
 using Ecommerce.Models;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +23,7 @@ namespace Ecommerce.Areas.Product.Controllers
             _hostEnvironment = hostEnvironment;
         }
 
+       
         [HttpGet]
         public async Task<IActionResult> Index(string? id)
         {
