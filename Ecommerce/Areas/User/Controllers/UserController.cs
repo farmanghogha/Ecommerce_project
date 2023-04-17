@@ -156,6 +156,11 @@ namespace Ecommerce.Areas.User.Controllers
         [HttpGet]
         public async Task<IActionResult> Dashboard()
          {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
             //ViewBag.rolecheck = HttpContext.Request.Cookies["Role"];
             ViewBag.rolecheck = HttpContext.Session.GetString("Role");
             var Role= HttpContext.Session.GetString("Role");
