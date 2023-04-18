@@ -27,9 +27,7 @@
 
                 <th>UserName</th>
                 <th>Email</th>
-                <th>Phone</th>
-              
-                
+                <th>Phone</th>          
 
             </tr>
         </thead>
@@ -50,9 +48,7 @@
                     
                    
                     <td width="20" style="text-align:center">
-                        <div class="w-75 btn-group " role="group">
-
-                          
+                        <div class="w-75 btn-group " role="group">                      
 
                         </div>
                     </td>
@@ -111,24 +107,19 @@
                             {
                                 <a asp-controller="User" asp-action="Approve" asp-route-email="@obj.Email" class="btn btn-primary mx-2"><i class="bi bi-check"></i> Approve</a>
                                 <button onclick="addpopup('@obj.Email')" class="btn btn-danger mx-2">Reject</button>
-
-
                             }
                             else if (obj.status == Status.Approve)
                             {
                                 <a asp-controller="User" asp-action="Block" asp-route-email="@obj.Email" class="btn btn-danger mx-2">Block</a>
-
                             }
                             else if (obj.status == Status.Block)
                             {
                                 <a asp-controller="User" asp-action="Block" asp-route-email="@obj.Email" class="btn btn-success mx-2">UnBlock</a>
-
                             }
                            
                             @if(obj.status != Status.pendding)
                             {
-                            <a asp-area="Product" asp-controller="Product" asp-action="Index" asp-route-id="@obj.Email" class="btn btn-success mx-2">ViewProduct</a>
-                                
+                                <a asp-area="Product" asp-controller="Product" asp-action="Index" asp-route-id="@obj.Email" class="btn btn-success mx-2">ViewProduct</a>
                             }   
                             
 

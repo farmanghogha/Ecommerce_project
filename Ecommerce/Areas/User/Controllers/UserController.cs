@@ -32,11 +32,7 @@ namespace Ecommerce.Areas.User.Controllers
         }
 
 
-     
-
-
-
-      
+           
         
         // Login for any User 
       
@@ -91,8 +87,6 @@ namespace Ecommerce.Areas.User.Controllers
            
             return View();
         }
-
-
 
 
         // signup for dealler only....
@@ -322,8 +316,6 @@ namespace Ecommerce.Areas.User.Controllers
             HttpContext.Session.Clear();
             return RedirectToAction("Login");
         }
-
-
 
 
         // Add Admin by Super Admin only....

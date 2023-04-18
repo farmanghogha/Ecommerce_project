@@ -6,7 +6,6 @@
         public string email { get; set; }
         public string password { get; set; }
         public string confo_password { get; set; }
-
         public string phoneNo { get; set; }
 
     }
