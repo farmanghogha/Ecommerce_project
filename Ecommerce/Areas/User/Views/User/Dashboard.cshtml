@@ -1,13 +1,11 @@
-﻿@*@model IEnumerable<Ecommerce.Models.Dealer>*@
-@model dynamic
+﻿@model dynamic
 
 @if (Model == null)
 {
     <h1 style="color:red">Page Not found...</h1>
 }
 
-@*@if (ViewBag.rolecheck == "SuparAdmin")
-*@
+
 @if(User.IsInRole("SuparAdmin")){
     <div class="container p-3">
         <div class="row pt-4">

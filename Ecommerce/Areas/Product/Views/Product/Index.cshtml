@@ -11,17 +11,18 @@
             <h3 class="text-primary">Product List</h3>
         </div>
         <div class="col-4">
-            <input type="text" id="searchvalue" placeholder="search by Name/Price"/>
+            <input type="text" id="searchvalue" placeholder="search by Name/Price" />
         </div>
         <div class="col-4 text-end">
-            
-          @if(role=="Dealer"){
-            <a class="btn btn-primary" asp-action="productPage"><i class="bi bi-plus-circle"></i> Add Product</a>
 
-          }
+            @if (role == "Dealer")
+            {
+                <a class="btn btn-primary" asp-action="productPage"><i class="bi bi-plus-circle"></i> Add Product</a>
+
+            }
             @if (role != "Dealer")
             {
-                
+
                 <a class="btn btn-primary" asp-area="User" asp-controller="User" asp-action="Dashboard"><i class="bi bi-backspace"></i> Go Back</a>
             }
 
@@ -67,30 +68,37 @@
                     @obj.DiscountAmount
                 </td>
                 <td width="20" style="text-align:center">
-                   @if(@ViewBag.roletype=="Dealer"){
-                    <div class="w-75 btn-group" role="group">
-                            <a class="btn btn-primary" asp-action="productPage" asp-route-id="@obj.ProductId"><i class="bi bi-pencil-square"></i> Edit</a>
-                          &nbsp;
-                        <a class="btn btn-success" asp-action="AddDiscount" asp-route-id="@obj.ProductId">Discount</a>
-                          &nbsp;
-                            <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId"><i class="bi bi-trash"></i> Delete</a>
-                        &nbsp;
-                       @if(obj.IsActive==false){
+                    @if (User.IsInRole("Dealer"))
+                    {
+                        <div class="w-75 btn-group" role="group">
+                            
+                           <a class="btn btn-primary" asp-action="productPage" asp-route-id="@obj.ProductId"><i class="bi bi-pencil-square"></i> Edit</a>
+                            &nbsp;
+                           <a class="btn btn-success" asp-action="AddDiscount" asp-route-id="@obj.ProductId">Discount</a>
+                            &nbsp;
+                            <a class="btn btn-danger" onclick="Deletedata('@obj.ProductId')">Delete</a>
+                           &nbsp;
+                
+                    
+                        @if (obj.IsActive == false)
+                        {
 
-                            <a class="btn btn-outline-success" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">IsActive</a>
+                                    <a class="btn btn-outline-success" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">IsActive</a>
                         }
                         else
                         {
-                            <a class="btn btn-outline-danger" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">DeActive</a>
+                                    <a class="btn btn-outline-danger" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">DeActive</a>
 
                         }
-                     </div>
+                        </div> 
 
                     }
                     else
                     {
-                        <a class="btn btn-danger" asp-action="DeleteProduct" asp-route-id="@obj.ProductId"><i class="bi bi-trash"></i> Delete</a>
-                       if(obj.IsActive==false){
+                       
+
+                        if (obj.IsActive == false)
+                        {
 
                             <a class="btn btn-outline-success" asp-action="StatusUpdate" asp-route-id="@obj.ProductId">IsActive</a>
                         }
@@ -111,41 +119,48 @@
 @section Scripts{
     @{
         <partial name="_ValidationScriptspartial"></partial>
-        
-    }
-<script>
-    //$('#searchvalue').keyup(function () {
-    //    debugger;
-    //    var value = $('#searchvalue').val();
-    //    $.ajax({
-    //        url: '/Product/Product/Search',
-    //        type: "GET",
-    //        data: "name=" + value,
-    //        success: function (result) {
-    //            $('body').html(result);
-    //            $('#searchvalue').val(value);
-    //            $('#searchvalue').focus();
-    //        },
-    //        error: function (err) {
-    //            console.log(err);
 
-    //        }
-    //    });
-       
-    //});
+    }
+    <script>
+
 
         $(document).ready(function () {
             $("#searchvalue").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
                 $("#tblData tbody tr").filter(function () {
                     $(this).toggle((
-                        $(this.children[0]).text().toLowerCase().indexOf(value) > -1 || 
+                        $(this.children[0]).text().toLowerCase().indexOf(value) > -1 ||
                         $(this.children[2]).text().toLowerCase().indexOf(value) > -1));
-                       //  $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
+                    //  $(this).toggle($(this).text().toLowerCase().indexOf(searchValue) > -1);
                 });
             });
         });
 
 
-</script>
+        function Deletedata(id) {
+            debugger;
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/Product/Product/DeleteProduct',
+                        type: 'POST',
+                        data: { "id": id },
+                        success: function (data) {
+                            console.log(data);
+                            $('body').html(data);
+                        }
+                    })
+                }
+            })
+        }
+    </script>
 }

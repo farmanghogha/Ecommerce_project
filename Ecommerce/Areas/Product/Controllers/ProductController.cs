@@ -14,16 +14,16 @@ namespace Ecommerce.Areas.Product.Controllers
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _hostEnvironment;
-       
 
-        public ProductController(ApplicationDbContext db, UserManager<ApplicationUser> userManager , IWebHostEnvironment hostEnvironment)
+
+        public ProductController(ApplicationDbContext db, UserManager<ApplicationUser> userManager, IWebHostEnvironment hostEnvironment)
         {
             _db = db;
             _userManager = userManager;
             _hostEnvironment = hostEnvironment;
         }
 
-       
+
         [HttpGet]
         public async Task<IActionResult> Index(string? id)
         {
@@ -31,8 +31,8 @@ namespace Ecommerce.Areas.Product.Controllers
             {
                 return RedirectToAction("Login", "User", new { area = "User" });
             }
-           
-            var user =await _userManager.GetUserAsync(User);
+
+            var user = await _userManager.GetUserAsync(User);
 
             var role = await _userManager.GetRolesAsync(user);
             var currentrole = role.FirstOrDefault();
@@ -43,10 +43,10 @@ namespace Ecommerce.Areas.Product.Controllers
             {
                 var userd = await _userManager.GetUserAsync(User);
                 ViewBag.UserName = user.Email;
-                              
+
                 var data = _db.product.Where(x => x.CreatedBy == userd.Id).ToList();
                 return View(data);
-                
+
             }
             else if (id != null)
             {
@@ -62,17 +62,17 @@ namespace Ecommerce.Areas.Product.Controllers
                     var data = _db.product.Where(x => x.CreatedBy == userdata.Id).ToList();
                     return View(data);
                 }
-                   
-               
-               
-            }          
+
+
+
+            }
             else
             {
                 return View();
             }
-            
-          
-        }                          
+
+
+        }
 
         [HttpGet]
         public IActionResult productPage(int? id)
@@ -82,25 +82,25 @@ namespace Ecommerce.Areas.Product.Controllers
                 return RedirectToAction("Login", "User", new { area = "User" });
             }
 
-            if (id== null)
+            if (id == null)
             {
                 return View();
             }
             else
             {
                 var data = _db.product.Find(id);
-              return View(data);
+                return View(data);
 
             }
         }
 
         // Add Product
         [HttpPost]
-        public async Task<IActionResult> productPage(Productdata productdata,IFormFile file)
+        public async Task<IActionResult> productPage(Productdata productdata, IFormFile file)
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Login","User",new { area = "User" });
+                return RedirectToAction("Login", "User", new { area = "User" });
             }
 
 
@@ -112,40 +112,40 @@ namespace Ecommerce.Areas.Product.Controllers
             }
 
             string wwwRootPath = _hostEnvironment.WebRootPath;
-           
-                string filename = Guid.NewGuid().ToString();
-                var uploads = Path.Combine(wwwRootPath, @"images\Products");
-                var extension = Path.GetExtension(file.FileName);
-                
-               
-                using (var fileStreams = new FileStream(Path.Combine(uploads, filename + extension), FileMode.Create))
-                {
-                    file.CopyTo(fileStreams);
-                }
+
+            string filename = Guid.NewGuid().ToString();
+            var uploads = Path.Combine(wwwRootPath, @"images\Products");
+            var extension = Path.GetExtension(file.FileName);
+
+
+            using (var fileStreams = new FileStream(Path.Combine(uploads, filename + extension), FileMode.Create))
+            {
+                file.CopyTo(fileStreams);
+            }
             productdata.ImageUrl = @"\images\products\" + filename + extension;
 
-          
-           
-         
 
-            var data=await _userManager.GetUserAsync(User);
+
+
+
+            var data = await _userManager.GetUserAsync(User);
 
             productdata.CreatedBy = data.Id;
+            productdata.IsActive = true;
+            await _db.product.AddAsync(productdata);
+            await _db.SaveChangesAsync();
 
-           await _db.product.AddAsync(productdata);
-           await _db.SaveChangesAsync();
-            
             return RedirectToAction("Index");
         }
-        
+
         //Edit Product
         [HttpPost]
-        public IActionResult EditProduct(Productdata productdata , IFormFile? file)
+        public IActionResult EditProduct(Productdata productdata, IFormFile? file)
         {
-            if(file != null)
+            if (file != null)
             {
-               string wwwRootPath = _hostEnvironment.WebRootPath;
-               
+                string wwwRootPath = _hostEnvironment.WebRootPath;
+
 
                 if (productdata.ImageUrl != null)
                 {
@@ -171,17 +171,18 @@ namespace Ecommerce.Areas.Product.Controllers
             }
 
 
-
+            
 
             _db.product.Update(productdata);
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
         //Delete Product
+        [HttpPost]
         public IActionResult DeleteProduct(int id)
         {
 
-            var data=_db.product.Find(id);
+            var data = _db.product.Find(id);
 
             string wwwRootPath = _hostEnvironment.WebRootPath;
 
@@ -199,7 +200,7 @@ namespace Ecommerce.Areas.Product.Controllers
             _db.product.Remove(data);
             _db.SaveChanges();
 
-            return RedirectToAction("Index");
+            return View("Index",_db.product.ToList());
         }
         //Add Discount
         public IActionResult AddDiscount(int id)
@@ -217,7 +218,7 @@ namespace Ecommerce.Areas.Product.Controllers
 
             var product = _db.product.Find(discount.ProductId);
 
-            if(discount.DiscountType==DiscountType.Amount)
+            if (discount.DiscountType == DiscountType.Amount)
             {
                 product.DiscountAmount = discount.Amount;
             }
@@ -226,10 +227,10 @@ namespace Ecommerce.Areas.Product.Controllers
                 if (discount.Amount > 100)
                 {
                     ViewBag.adddisErroe = "percentage not valid Enter only 1 to 100";
-                    @ViewBag.pid=discount.ProductId;
+                    @ViewBag.pid = discount.ProductId;
                     return View(discount);
                 }
-                product.DiscountAmount = (product.Price * discount.Amount) / 100 ;
+                product.DiscountAmount = (product.Price * discount.Amount) / 100;
 
             }
             _db.discount.Add(discount);
@@ -242,20 +243,20 @@ namespace Ecommerce.Areas.Product.Controllers
         public IActionResult StatusUpdate(int? id)
         {
             var data = _db.product.Find(id);
-            if(id!=0 || id != null)
+            if (id != 0 || id != null)
             {
-                if(data.IsActive==true)
+                if (data.IsActive == true)
                 {
-                    data.IsActive= false;
+                    data.IsActive = false;
                 }
                 else
                 {
-                    data.IsActive=true;
+                    data.IsActive = true;
                 }
             }
             _db.product.Update(data);
             _db.SaveChanges();
-           return RedirectToAction("Index", null, new { id = data.CreatedBy});
+            return RedirectToAction("Index", null, new { id = data.CreatedBy });
         }
 
 
@@ -267,7 +268,7 @@ namespace Ecommerce.Areas.Product.Controllers
         //    var data = _db.product.Where(x => x.CreatedBy == user.Id);
         //    if (name == null)
         //    {
-                
+
         //        return View("Index",data);
         //    }
         //    else if (id != null)
@@ -279,7 +280,7 @@ namespace Ecommerce.Areas.Product.Controllers
         //      var serchdata=data.Where(x=>x.ProductName.Contains(name)).ToList();  
         //        return View("Index", serchdata);
         //    }
-            
+
         //}
     }
 }

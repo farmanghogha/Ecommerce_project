@@ -27,10 +27,7 @@ namespace Ecommerce.Areas.User.Controllers
             smtp.Authenticate("farmanghogha2000@gmail.com", "ugsesevrdnwgerfw");
             smtp.Send(email);
             smtp.Disconnect(true);
-
-
-
-            
+                        
         }
     }
 }
