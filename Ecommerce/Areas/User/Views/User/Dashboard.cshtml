@@ -117,7 +117,7 @@
                                 <a asp-controller="User" asp-action="Block" asp-route-email="@obj.Email" class="btn btn-success mx-2">UnBlock</a>
                             }
                            
-                            @if(obj.status != Status.pendding)
+                            @if(obj.status != Status.pendding && obj.status != Status.Reject)
                             {
                                 <a asp-area="Product" asp-controller="Product" asp-action="Index" asp-route-id="@obj.Email" class="btn btn-success mx-2">ViewProduct</a>
                             }   

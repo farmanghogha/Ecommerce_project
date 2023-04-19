@@ -13,7 +13,7 @@ namespace Ecommerce.Areas.User.Controllers
     {
         
         [HttpGet]
-        public IActionResult Index(SendMail sendMail)
+        public void Index(SendMail sendMail)
         {
             var email = new MimeMessage();
             email.From.Add(MailboxAddress.Parse(sendMail.From));
@@ -24,13 +24,13 @@ namespace Ecommerce.Areas.User.Controllers
             // send email
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
             smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-            smtp.Authenticate("farmanghogha2000@gmail.com", "gahlwbuvloolgacq");
+            smtp.Authenticate("farmanghogha2000@gmail.com", "ugsesevrdnwgerfw");
             smtp.Send(email);
             smtp.Disconnect(true);
 
 
 
-            return View();
+            
         }
     }
 }
