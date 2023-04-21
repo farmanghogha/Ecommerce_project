@@ -1,4 +1,7 @@
-﻿@model IEnumerable<Productdata>
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Productdata>
+
+@*@model IEnumerable<Productdata>*@
 @inject IHttpContextAccessor HttpContextAccessor
 @{
     var role = HttpContextAccessor.HttpContext.Session.GetString("Role");
@@ -116,6 +119,14 @@
         }
     </tbody>
 </table>
+<br />
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+        of @Model.PageCount
+@for (int i = 1; i <= Model.PageCount; i++)
+{
+    <a class="btn btn-primary" href="@Url.Action("Index", new { page = i,pagesize = Model.PageSize })">@i</a>
+}
+
 @section Scripts{
     @{
         <partial name="_ValidationScriptspartial"></partial>

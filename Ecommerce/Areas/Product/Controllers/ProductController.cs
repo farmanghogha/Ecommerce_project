@@ -5,6 +5,7 @@ using Ecommerce.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using PagedList;
 
 namespace Ecommerce.Areas.Product.Controllers
 {
@@ -25,7 +26,7 @@ namespace Ecommerce.Areas.Product.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Index(string? id)
+        public async Task<IActionResult> Index(string? id,int page = 1,int pagesize=3)
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -45,7 +46,10 @@ namespace Ecommerce.Areas.Product.Controllers
                 ViewBag.UserName = user.Email;
 
                 var data = _db.product.Where(x => x.CreatedBy == userd.Id).ToList();
-                return View(data);
+
+               PagedList<Productdata> setdata=new PagedList<Productdata>(data,page,pagesize);
+
+                return View(setdata);
 
             }
             else if (id != null)
@@ -54,13 +58,17 @@ namespace Ecommerce.Areas.Product.Controllers
                 {
                     var userdata = await _userManager.FindByEmailAsync(id);
                     var data = _db.product.Where(x => x.CreatedBy == userdata.Id).ToList();
-                    return View(data);
+                    PagedList<Productdata> setdata = new PagedList<Productdata>(data, page, pagesize);
+
+                    return View(setdata);
                 }
                 else
                 {
                     var userdata = await _userManager.FindByIdAsync(id);
                     var data = _db.product.Where(x => x.CreatedBy == userdata.Id).ToList();
-                    return View(data);
+                    PagedList<Productdata> setdata = new PagedList<Productdata>(data, page, pagesize);
+
+                    return View(setdata);
                 }
 
 
@@ -196,7 +204,9 @@ namespace Ecommerce.Areas.Product.Controllers
                 }
 
             }
-
+             
+            var dis=_db.discount.Where(x=>x.ProductId== data.ProductId).ToList();
+            _db.discount.RemoveRange(dis);
             _db.product.Remove(data);
             _db.SaveChanges();
 
